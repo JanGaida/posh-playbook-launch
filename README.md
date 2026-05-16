@@ -6,7 +6,7 @@
 <h1 align="center">Posh-Playbook-Launcher</h1>
 
 <p align="center">
-  A lightweight, JSON-driven application launcher and Windows environment orchestrator focused on Windows performance configurations, powered by PowerShell 7.
+  A lightweight, data-driven application launcher focused on Windows performance configurations, powered by PowerShell 7.
 </p>
 
 ---
