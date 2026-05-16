@@ -28,25 +28,55 @@
 
 flowchart LR
 
-    A([Launch])
-    B([Start Playbook])
-    C([Optimize])
-    D([Background])
-    E([Exit Playbook])
-    F([Restore])
-    G([Exit])
+    A([Launch]) --> SP
+    SP --> D([Wait in Background])
 
-    A ==> B ==> C ==> D ==> E ==> F ==> G
+    F([Main App Exit]) --> EP
+    EP --> I([Exit])
 
-    classDef start fill:#1f6feb,stroke:#58a6ff,color:#ffffff;
-    classDef process fill:#2b2b2b,stroke:#8b949e,color:#ffffff;
-    classDef finish fill:#238636,stroke:#2ea043,color:#ffffff;
+    subgraph SP [Run Start-Playbook]
+        direction LR
+        B([Start Main App])
+        C([Start Side App])
+        D1([Apply Optimizations])
 
-    class A start;
-    class B,C,D,E,F process;
-    class G finish;
+        B --> C --> D1
+    end
 
-    linkStyle default stroke:#8b949e,stroke-width:2px;
+    subgraph EP [Run Exit-Playbook]
+        direction LR
+        G([Run OnExit Logic])
+        H([Restore Optimizations])
+
+        G --> H
+    end
+
+    %% Main Flow
+    classDef launch fill:#1f6feb,stroke:#1f6feb,color:#ffffff;
+    classDef runtime fill:#da3633,stroke:#da3633,color:#ffffff;
+    classDef shutdown fill:#da3633,stroke:#da3633,color:#ffffff;
+    classDef success fill:#1f6feb,stroke:#1f6feb,color:#ffffff;
+
+    %% Internal Steps
+    classDef app fill:#2ea043,stroke:#2ea043,color:#ffffff;
+    classDef optimize fill:#2ea043,stroke:#2ea043,color:#ffffff;
+    classDef restore fill:#2ea043,stroke:#2ea043,color:#ffffff;
+
+    %% Assign Classes
+    class A launch;
+    class D runtime;
+    class F shutdown;
+    class I success;
+
+    class B,C app;
+    class D1 optimize;
+    class G,H restore;
+
+    %% Arrow Styling
+    linkStyle default stroke:#8b949e,stroke-width:2.5px;
+
+    style SP fill:#00000,stroke:#8b949e,stroke-width:2px,color:#ffffff
+    style EP fill:#00000,stroke:#8b949e,stroke-width:2px,color:#ffffff
 ```
 
 ## 📌 Instructions
