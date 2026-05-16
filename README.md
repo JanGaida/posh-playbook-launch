@@ -198,3 +198,4 @@ git describe --tags
 | Version | Date |Changes |
 |-:|-|-|
 | v0.1 | 05.2026| Init |
+| v0.2 | 05.2026| Added core parking optimizations |
