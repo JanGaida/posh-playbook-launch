@@ -1,6 +1,7 @@
 #Requires -Version 7.0
 <#
-todo: synopsis
+.SYNOPSIS
+    Launches and manages the execution of a playbook.
 #>
 [CmdletBinding()]
 param (
