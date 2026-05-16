@@ -138,10 +138,10 @@ function Get-DefaultConfigs {
             Log_Directory = Join-Path `
                 -Path $global:RootDir `
                 -ChildPath "$("playbooks/$($global:CliPlaybookName)/logs/$($date.ToString("yyyy"))/$($date.ToString("MM"))/$($date.ToString("dd"))")"
-            Log_Filename = "transcript_$($date.ToString("HHmmss"))_$($global:CliPlaybookName).log"
+            Log_Filename   = "transcript_$($date.ToString("HHmmss"))_$($global:CliPlaybookName).log"
             Logging_Append = $false
         }
-
+        
         Main_App = @{
             Priority_Class = "High"
             Power_Profile  = "Performance"
@@ -159,9 +159,12 @@ function Get-DefaultConfigs {
         }
 
         Side_Apps = @()
+
+        Core_Parking = @{
+            Enabled        = $true
+            Min_Percentage = 100
+        }
     }
-
-
 }
 
 <#

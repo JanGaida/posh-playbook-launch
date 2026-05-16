@@ -234,6 +234,7 @@ function Stop-Playbook {
         # Optimizations
         Restore-WinServices
         Restore-ProcessPriority
+        Restore-CoreParking
 
         # Stop trayIcon
         Unregister-TrayIcon

@@ -115,6 +115,7 @@ process {
         # Optimizations
         Optimize-WinServices
         Optimize-ProcessPriority
+        Optimize-CoreParking
 
         # Playbook
         $__reached = "Wait-Playbook"

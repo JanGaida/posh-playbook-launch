@@ -15,7 +15,7 @@
 - Start a Executable with companion applications
 - Stops windows services
 - Adjusts process priorities
-- Disables CPU-Cores parking [**WIP**]
+- Disables CPU-Cores parking
 
 ## 📝 Requirements
 - Windows
