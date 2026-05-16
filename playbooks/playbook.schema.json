@@ -62,7 +62,7 @@
                 }
             }
         },
-    
+
         "Optimiziations": {
             "type": "object",
             "required": [ "Priority_Class", "WinServices" ],
@@ -99,6 +99,15 @@
                             "description": "List of Windows background services to stop. Wildcards (e.g., ServiceName_*) are supported.",
                             "items": { "type": "string" }
                         }
+                    }
+                },
+
+                "Core_Parking": {
+                    "type": "object",
+                    "required": [ ],
+                    "properties": {
+                        "Enabled": { "type": "boolean", "description": "Enables/Disables the core parking feature." },
+                        "Min_Percentage": { "type": "integer", "description": "The targeted percentage to be awake. Range=[0,100]" }
                     }
                 }
             }
