@@ -75,8 +75,8 @@ flowchart LR
     %% Arrow Styling
     linkStyle default stroke:#8b949e,stroke-width:2.5px;
 
-    style SP fill:#00000,stroke:#8b949e,stroke-width:2px,color:#ffffff
-    style EP fill:#00000,stroke:#8b949e,stroke-width:2px,color:#ffffff
+    style SP fill:#ffffff,stroke:#8b949e,stroke-width:2px,color:#79818a
+    style EP fill:#ffffff,stroke:#8b949e,stroke-width:2px,color:#79818a
 ```
 
 ## 📌 Instructions
