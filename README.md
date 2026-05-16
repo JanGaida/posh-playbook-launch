@@ -23,22 +23,30 @@
 - Git-CLI
 
 ## 🔎 How it Works
-
 ```mermaid
-graph TD
-    %% Styling Definitionen
-    classDef prepare fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef launch fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-    classDef opt fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
-    classDef wait fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+%%{init: {'theme':'base'}}%%
 
-    %% Ablauf-Knoten
-    A[1. Prepare Environment]:::prepare --> B[2. Start Main Application]:::launch
-    B --> C[3. Launch Companion Apps]:::launch
-    C --> D[4. Apply Optimizations<br><i>Process Priorities & WinServices</i>]:::opt
-    D --> E((5. Await Main-App Exit<br><i>Minimize to System Tray</i>)):::wait
-    E --> F[6. Undo Optimizations<br><i>Restore Services & Priorities</i>]:::opt
-    F --> G([End Execution]):::prepare
+flowchart LR
+
+    A([Launch])
+    B([Start Playbook])
+    C([Optimize])
+    D([Background])
+    E([Exit Playbook])
+    F([Restore])
+    G([Exit])
+
+    A ==> B ==> C ==> D ==> E ==> F ==> G
+
+    classDef start fill:#1f6feb,stroke:#58a6ff,color:#ffffff;
+    classDef process fill:#2b2b2b,stroke:#8b949e,color:#ffffff;
+    classDef finish fill:#238636,stroke:#2ea043,color:#ffffff;
+
+    class A start;
+    class B,C,D,E,F process;
+    class G finish;
+
+    linkStyle default stroke:#8b949e,stroke-width:2px;
 ```
 
 ## 📌 Instructions
