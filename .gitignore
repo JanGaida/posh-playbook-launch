@@ -1,0 +1,6 @@
+.git
+
+.vscode
+
+playbooks/*
+!playbooks/playbook.schema.json

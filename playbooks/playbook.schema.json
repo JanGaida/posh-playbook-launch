@@ -1,0 +1,107 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "PlaybookConfig",
+    "type": "object",
+    "required": [ "Playbook", "Main_App", "Side_Apps", "Optimiziations" ],
+    "properties": {
+
+        "Playbook": {
+            "type": "object",
+            "required": [],
+            "properties": {
+                "Log_Enabled": { "type": "boolean", "description": "Enables or disables logging for this playbook execution." },
+                "Logging_Append": { "type": "boolean", "description": "If true, appends to the log file instead of overwriting it." },
+                "Log_Directory": { "type": "string", "description": "The directory where the log files will be stored." },
+                "Log_Filename": { "type": "string", "description": "The filename of the log file." }
+            }
+        },
+
+        "Main_App": {
+            "type": "object",
+            "required": [ "Path" ],
+            "properties": {
+                "Path": { "type": "string", "description": "Absolute path to the main application executable (.exe)." },
+                "Priority_Class": {
+                    "type": "string",
+                    "enum": [ "Idle", "BelowNormal", "Normal", "AboveNormal", "High", "RealTime" ],
+                    "description": "The process priority class for the main application."
+                },
+                "Power_Profile": { "type": "string", "description": "The Windows Power Plan/Profile to activate (e.g., Performance)." },
+                "Arguments": { "type": "string", "description": "Command-line arguments passed to the main application." },
+                "WindowStyle": {
+                    "type": "string",
+                    "enum": [ "Normal", "Hidden", "Minimized", "Maximized" ],
+                    "description": "The window state of the main application on startup."
+                }
+            }
+        },
+
+        "Side_Apps": {
+            "type": "array",
+            "description": "List of companion applications to launch alongside the main application.",
+            "items": {
+                "type": "object",
+                "required": [ "Path" ],
+                "properties": {
+                    "Path": { "type": "string", "description": "Absolute path to the companion application executable." },
+                    "Arguments": { "type": "string", "description": "Command-line arguments passed to the companion application." },
+                    "WindowStyle": {
+                        "type": "string",
+                        "enum": [ "Normal", "Hidden", "Minimized", "Maximized" ],
+                        "description": "The window state of the companion application on startup."
+                    },
+                    "OnExit": {
+                        "type": "string",
+                        "enum": [ "Default", "Terminate", "RecallWithArgs" ],
+                        "description": "The onExit-Logic to be used."
+                    },
+                    "OnExit_Args": {
+                        "type": "string",
+                        "description": "Required when OnExit='RecallWithArgs': The arguments to use when recalling the side application."
+                    }
+                }
+            }
+        },
+    
+        "Optimiziations": {
+            "type": "object",
+            "required": [ "Priority_Class", "WinServices" ],
+            "properties": {
+
+                "Priority_Class": {
+                    "type": "object",
+                    "required": [ "Self", "Apps" ],
+                    "properties": {
+                        "Self": {
+                            "type": "string",
+                            "enum": [ "Idle", "BelowNormal", "Normal", "AboveNormal", "High", "RealTime" ],
+                            "description": "The process priority class for the launch script itself."
+                        },
+                        "Apps": {
+                            "type": "object",
+                            "description": "Mapping of target process priority classes to lists of process names.",
+                            "properties": {
+                                "BelowNormal": { "type": "array", "items": { "type": "string" }, "description": "Processes to move to Below Normal priority." },
+                                "Normal": { "type": "array", "items": { "type": "string" }, "description": "Processes to reset to Normal priority." },
+                                "AboveNormal": { "type": "array", "items": { "type": "string" }, "description": "Processes to move to Above Normal priority." }
+                            },
+                            "additionalProperties": { "type": "array", "items": { "type": "string" } }
+                        }
+                    }
+                },
+
+                "WinServices": {
+                    "type": "object",
+                    "required": [ "Stop" ],
+                    "properties": {
+                        "Stop": {
+                            "type": "array",
+                            "description": "List of Windows background services to stop. Wildcards (e.g., ServiceName_*) are supported.",
+                            "items": { "type": "string" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
