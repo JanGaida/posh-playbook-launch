@@ -199,3 +199,4 @@ git describe --tags
 |-:|-|-|
 | v0.1 | 05.2026| Init |
 | v0.2 | 05.2026| Added core parking optimizations |
+| v0.3 | 05.2026| Added management of Windows Defender |

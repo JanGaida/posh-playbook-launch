@@ -83,6 +83,7 @@ function Invoke-Playbook {
     Write-Host  "`nStarting playbook...`n" -ForegroundColor Cyan
 
     # --- MAIN APP ---
+
     # Prepare
     $global:__main_process_cwd = if ([string]::IsNullOrWhiteSpace("$($global:Cfg.Main_App.Working_Directory)")) {
         Split-Path "$($global:Cfg.Main_App.Path)"
@@ -115,7 +116,9 @@ function Invoke-Playbook {
         -Process       $global:__main_process `
         -PriorityClass "$($global:Cfg.Main_App.Priority_Class)"
 
+
     # --- SIDE APPS ---
+
     foreach ($sideApp in $global:Cfg.Side_Apps) {
         if (-not $sideApp) { continue }
 
@@ -171,6 +174,13 @@ function Invoke-Playbook {
                 }
             }
         }
+    }
+
+
+    # --- Misc ---
+
+    if ($global:Cfg.Playbook.Manage_Windows_Defender) {
+        Stop-WinDefender
     }
 
     Start-Sleep -Milliseconds $global:Cfg.Playbook.Delay_Ms
@@ -235,6 +245,11 @@ function Stop-Playbook {
         Restore-WinServices
         Restore-ProcessPriority
         Restore-CoreParking
+
+        # Windows Defender
+        if ($global:Cfg.Playbook.Manage_Windows_Defender) {
+            Start-WinDefender
+        }
 
         # Stop trayIcon
         Unregister-TrayIcon
