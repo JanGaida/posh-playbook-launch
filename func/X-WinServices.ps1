@@ -58,7 +58,7 @@ function Optimize-WinServices {
     }
 
     # Finally
-    Write-Host -NoNewline "Optimized Windows Services..."
+    Write-Host "Optimized Windows Services..."
     $outputCollection | Format-Table
 }
 

@@ -132,7 +132,7 @@ function Optimize-ProcessPriority {
     }
 
     # Finally
-    Write-Host -NoNewline "Optimized processs priorities..."
+    Write-Host "Optimized processs priorities..."
     $outputCollection | Format-Table
 }
 
