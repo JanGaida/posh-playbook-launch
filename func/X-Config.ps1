@@ -139,7 +139,7 @@ function Get-DefaultConfigs {
                 -Path $global:RootDir `
                 -ChildPath "$("playbooks/$($global:CliPlaybookName)/logs/$($date.ToString("yyyy"))/$($date.ToString("MM"))/$($date.ToString("dd"))")"
             Log_Filename   = "transcript_$($date.ToString("HHmmss"))_$($global:CliPlaybookName).log"
-            Logging_Append = $false
+            Log_Append = $false
         }
         
         Main_App = @{

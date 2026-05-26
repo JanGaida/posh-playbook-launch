@@ -73,8 +73,8 @@ function Start-Logging {
         Write-Error "Mandatory variable `$global:Cfg.Playbook.Log_Filename is null or empty."
         return
     }
-    if ($null -eq "$($global:Cfg.Playbook.Logging_Append)") {
-        Write-Error "Mandatory variable `$global:Cfg.Playbook.Logging_Append is null or empty."
+    if ($null -eq "$($global:Cfg.Playbook.Log_Append)") {
+        Write-Error "Mandatory variable `$global:Cfg.Playbook.Log_Append is null or empty."
         return
     }
 
@@ -82,7 +82,7 @@ function Start-Logging {
     $logPath = Join-Path $global:Cfg.Playbook.Log_Directory $global:Cfg.Playbook.Log_Filename
 
     try {
-        if (-not $($global:Cfg.Playbook.Logging_Append) -and $(Test-Path $LogPath)) {
+        if (-not $($global:Cfg.Playbook.Log_Append) -and $(Test-Path $LogPath)) {
             Remove-Item $LogPath -Force
         }
 
