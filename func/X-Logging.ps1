@@ -40,7 +40,6 @@ function Resolve-Logging {
     }
     else {
         # --- START ---
-
         # Guard
         if (-not $($null -eq $global:__log_initialized) -or $($global:__log_initialized)) { return }
         Resolve-Configs
@@ -51,6 +50,7 @@ function Resolve-Logging {
             Start-Logging
         }
 
+        Clear-Logging
         $global:__log_initialized = $true
     }
 }
@@ -125,4 +125,172 @@ function Stop-Logging {
     }
 
     $global:__log_initialized = $false
+}
+
+<#
+.SYNOPSIS
+    Removes outdated log files and orphaned log directories.
+#>
+function Clear-Logging {
+    [CmdletBinding(
+        SupportsShouldProcess = $true,
+        ConfirmImpact = 'Medium'
+    )]
+    param (
+        [Parameter(Mandatory = $false)]
+        [switch]
+        $KeepEmptyDirectories = $false
+    )
+
+    try {
+        # Guards
+        Resolve-Configs
+
+        if ([string]::IsNullOrWhiteSpace($global:Cfg.Playbook.Log_Directory)) {
+            throw "Mandatory variable `$global:Cfg.Playbook.Log_Directory is null or empty."
+        }
+        if ([string]::IsNullOrWhiteSpace("$($global:Cfg.Playbook.Log_RetentionDays)")) {
+            throw "Mandatory variable `$global:Cfg.Playbook.Log_RetentionDays is null or empty."
+        }
+        if ([string]::IsNullOrWhiteSpace($global:Cfg.Playbook.Log_Filename)) {
+            throw "Mandatory variable `$global:Cfg.Playbook.Log_Filename is null or empty."
+        }
+
+        # Init
+        $logDirectory = $global:Cfg.Playbook.Log_Directory
+        while (
+            -not [string]::IsNullOrWhiteSpace($logDirectory) -and
+            [System.IO.Path]::GetFileName($logDirectory) -match '^\d+$'
+        ) {
+            $logDirectory = Split-Path $logDirectory -Parent
+        }
+        $retentionDays = [int]$global:Cfg.Playbook.Log_RetentionDays
+        $filePattern = "*.$(($global:Cfg.Playbook.Log_Filename -split "\.")[-1])"
+
+        # Resolve
+        if (-not (Test-Path -LiteralPath $logDirectory)) {
+            return
+        }
+        $resolvedPath = (Resolve-Path -LiteralPath $logDirectory).Path
+        $cutoffDate = (Get-Date).Date.AddDays(-$retentionDays)
+
+        Write-Verbose (
+            "Cleaning logs`n" +
+            "    Path          = $resolvedPath`n" +
+            "    RetentionDays = $retentionDays`n" +
+            "    FilePattern   = $filePattern"
+        )
+
+        # Find outdated logs
+        $logFiles = Get-ChildItem `
+            -LiteralPath $resolvedPath `
+            -Filter $filePattern `
+            -File `
+            -Recurse `
+            -ErrorAction Stop `
+            | Where-Object {
+                $_.LastWriteTime.Date -lt $cutoffDate
+            }
+
+        if ($null -eq $logFiles -or $logFiles.Count -eq 0) {
+            Write-Verbose (
+                "No outdated log files found older than $retentionDays days " +
+                "in '$resolvedPath'."
+            )
+            return
+        }
+        Write-Verbose "Found $($logFiles.Count) outdated log file(s) for cleanup."
+
+        # Remove each
+        $outputCollection = [System.Collections.Generic.List[object]]::new()
+        foreach ($file in $logFiles) {
+
+            try {
+
+                $ageDays = ((Get-Date) - $file.LastWriteTime).Days
+
+                if ($PSCmdlet.ShouldProcess(
+                        $file.FullName,
+                        "Remove outdated log file"
+                )) {
+                    Remove-Item `
+                        -LiteralPath $file.FullName `
+                        -Force `
+                        -ErrorAction Stop
+                    $outputCollection.Add(
+                        [PSCustomObject]@{
+                            PSTypeName = 'Logging.Cleanup.Result'
+                            Action     = 'DeletedFile'
+                            Path       = $file.FullName.Replace($resolvedPath, '').TrimStart('\')
+                            AgeDays    = $ageDays
+                        }
+                    )
+                }
+            }
+            catch {
+
+                Write-Warning (
+                    "Failed to remove log file '$($file.FullName)': $($_.Exception.Message)"
+                )
+            }
+        }
+
+        # Remove orphan directories
+        if (-not $KeepEmptyDirectories) {
+
+            $directories = Get-ChildItem `
+                -LiteralPath $resolvedPath `
+                -Directory `
+                -Recurse `
+                -ErrorAction Stop `
+                | Sort-Object FullName -Descending
+
+            foreach ($directory in $directories) {
+
+                try {
+
+                    $remainingItems = Get-ChildItem `
+                        -LiteralPath $directory.FullName `
+                        -Force `
+                        -ErrorAction Stop
+
+                    if ($remainingItems.Count -eq 0) {
+
+                        if ($PSCmdlet.ShouldProcess(
+                                $directory.FullName,
+                                "Remove empty directory"
+                        )) {
+                            Remove-Item `
+                                -LiteralPath $directory.FullName `
+                                -Force `
+                                -ErrorAction Stop
+                            $outputCollection.Add(
+                                [PSCustomObject]@{
+                                    PSTypeName = 'Logging.Cleanup.Result'
+                                    Action     = 'DeletedDirectory'
+                                    Path       = $directory.FullName.Replace($resolvedPath, '').TrimStart('\')
+                                    AgeDays    = $null
+                                }
+                            )
+                        }
+                    }
+                }
+                catch {
+
+                    Write-Warning (
+                        "Failed to remove directory '$($directory.FullName)': $($_.Exception.Message)"
+                    )
+                }
+            }
+        }
+
+        # Finally
+        $outputCollection | Format-Table -AutoSize
+    }
+    catch {
+
+        Write-Error (
+            "Unexpected error in Clear-Logging: $($_.Exception.Message)"
+        )
+    }
 }

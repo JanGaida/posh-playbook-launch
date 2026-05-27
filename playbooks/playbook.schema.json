@@ -13,6 +13,7 @@
                 "Log_Append": { "type": "boolean", "description": "If true, appends to the log file instead of overwriting it." },
                 "Log_Directory": { "type": "string", "description": "The directory where the log files will be stored." },
                 "Log_Filename": { "type": "string", "description": "The filename of the log file." },
+                "Log_RetentionDays": { "type": "integer", "description": "After how many days the logfiles should be cleaned up." },
                 "Manage_Windows_Defender": { "type": "boolean", "description": "If true, disables certain Windows Defender Features." }
             }
         },

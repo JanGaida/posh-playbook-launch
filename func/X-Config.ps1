@@ -132,14 +132,15 @@ function Get-DefaultConfigs {
 
     return @{
         Playbook = @{
-            Name          = $global:CliPlaybookName
-            Delay_Ms      = 250
-            Log_Enabled   = $false
-            Log_Directory = Join-Path `
+            Name              = $global:CliPlaybookName
+            Delay_Ms          = 250
+            Log_Enabled       = $false
+            Log_Directory     = Join-Path `
                 -Path $global:RootDir `
                 -ChildPath "$("playbooks/$($global:CliPlaybookName)/logs/$($date.ToString("yyyy"))/$($date.ToString("MM"))/$($date.ToString("dd"))")"
-            Log_Filename   = "transcript_$($date.ToString("HHmmss"))_$($global:CliPlaybookName).log"
-            Log_Append = $false
+            Log_Filename      = "transcript_$($date.ToString("HHmmss"))_$($global:CliPlaybookName).log"
+            Log_Append        = $false
+            Log_RetentionDays = 14
         }
         
         Main_App = @{
