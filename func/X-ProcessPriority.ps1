@@ -133,7 +133,7 @@ function Optimize-ProcessPriority {
 
     # Finally
     Write-Host "Optimized processs priorities..."
-    $outputCollection | Format-Table
+    $outputCollection | Format-Table -AutoSize
 }
 
 <#
@@ -179,5 +179,5 @@ function Restore-ProcessPriority {
     # Finally
     $global:__opt_priority_class.Clear()
     Write-Host -NoNewline  "Restored processs priorities..."
-    $outputCollection | Format-Table
+    $outputCollection | Format-Table -AutoSize
 }

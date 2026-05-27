@@ -59,7 +59,7 @@ function Optimize-WinServices {
 
     # Finally
     Write-Host "Optimized Windows Services..."
-    $outputCollection | Format-Table
+    $outputCollection | Format-Table -AutoSize
 }
 
 <#
@@ -110,5 +110,5 @@ function Restore-WinServices {
     # Finally
     $global:__opt_win_services.Clear()
     Write-Host -NoNewline "Restored Windows Services..."
-    $outputCollection | Format-Table
+    $outputCollection | Format-Table -AutoSize
 }
